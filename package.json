@@ -20,6 +20,9 @@
     "url": "git@github.com:yahoo/fetchr"
   },
   "author": "Rajiv Tirumalareddy <rajivtirum@yahoo-inc.com>",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "licenses": [
     {
       "type": "BSD",
