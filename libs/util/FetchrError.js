@@ -29,6 +29,21 @@ function FetchrError(reason, message, options, request, response) {
 FetchrError.prototype = Object.create(Error.prototype);
 FetchrError.prototype.constructor = FetchrError;
 
+FetchrError.prototype.toJSON = function () {
+    return {
+        body: this.body,
+        message: this.message,
+        meta: this.meta,
+        name: this.name,
+        output: this.output,
+        rawRequest: this.rawRequest,
+        reason: this.reason,
+        statusCode: this.statusCode,
+        timeout: this.timeout,
+        url: this.url,
+    };
+};
+
 FetchrError.ABORT = 'ABORT';
 FetchrError.BAD_HTTP_STATUS = 'BAD_HTTP_STATUS';
 FetchrError.BAD_JSON = 'BAD_JSON';
