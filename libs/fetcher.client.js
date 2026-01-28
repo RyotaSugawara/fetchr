@@ -86,20 +86,19 @@ Request.prototype.clientConfig = function (config) {
  * @param {Object} result  The response data for successful request
  */
 Request.prototype._captureMetaAndStats = function (err, result) {
-    var self = this;
     var meta = (err && err.meta) || (result && result.meta);
     if (meta) {
-        self.options._serviceMeta.push(meta);
+        this.options._serviceMeta.push(meta);
     }
-    var statsCollector = self.options.statsCollector;
+    var statsCollector = this.options.statsCollector;
     if (typeof statsCollector === 'function') {
         var stats = {
-            resource: self.resource,
-            operation: self.operation,
-            params: self._params,
+            resource: this.resource,
+            operation: this.operation,
+            params: this._params,
             statusCode: err ? err.statusCode : 200,
             err: err,
-            time: Date.now() - self._startTime,
+            time: Date.now() - this._startTime,
         };
         statsCollector(stats);
     }
@@ -115,14 +114,14 @@ Request.prototype._send = function () {
     var captureMetaAndStats = this._captureMetaAndStats.bind(this);
 
     this._request.then(
-        function (result) {
+        (result) => {
             captureMetaAndStats(null, result);
             return result;
         },
-        function (err) {
+        (err) => {
             captureMetaAndStats(err);
             throw err;
-        },
+        }
     );
 
     return this._request;
@@ -150,7 +149,7 @@ Request.prototype.abort = function () {
 Request.prototype.end = function (callback) {
     if (!arguments.length) {
         console.warn(
-            'You called .end() without a callback. This will become an error in the future. Use .then() instead.',
+            'You called .end() without a callback. This will become an error in the future. Use .then() instead.'
         );
     }
 
@@ -158,12 +157,12 @@ Request.prototype.end = function (callback) {
 
     if (callback) {
         this._request.then(
-            function (result) {
+            (result) => {
                 callback(null, result && result.data, result && result.meta);
             },
-            function (err) {
+            (err) => {
                 callback(err);
-            },
+            }
         );
     }
 
@@ -233,11 +232,7 @@ Fetcher.prototype = {
             callback = clientConfig;
             clientConfig = {};
         }
-        return request
-            .params(params)
-            .body(body)
-            .clientConfig(clientConfig)
-            .end(callback);
+        return request.params(params).body(body).clientConfig(clientConfig).end(callback);
     },
 
     /**
@@ -284,11 +279,7 @@ Fetcher.prototype = {
             callback = clientConfig;
             clientConfig = {};
         }
-        return request
-            .params(params)
-            .body(body)
-            .clientConfig(clientConfig)
-            .end(callback);
+        return request.params(params).body(body).clientConfig(clientConfig).end(callback);
     },
 
     /**
@@ -319,28 +310,21 @@ Fetcher.prototype = {
      * @method updateOptions
      */
     updateOptions: function (options) {
-        var self = this;
         var contextPicker = {};
         if (this.options.contextPicker && options.contextPicker) {
-            ['GET', 'POST'].forEach(function (method) {
-                var oldPicker = self.options.contextPicker[method];
+            ['GET', 'POST'].forEach((method) => {
+                var oldPicker = this.options.contextPicker[method];
                 var newPicker = options.contextPicker[method];
 
                 if (Array.isArray(oldPicker) && Array.isArray(newPicker)) {
                     contextPicker[method] = [].concat(oldPicker, newPicker);
                 } else if (oldPicker || newPicker) {
                     var picker = newPicker || oldPicker;
-                    contextPicker[method] = Array.isArray(picker)
-                        ? [].concat(picker)
-                        : picker;
+                    contextPicker[method] = Array.isArray(picker) ? [].concat(picker) : picker;
                 }
             });
         } else {
-            contextPicker = Object.assign(
-                {},
-                this.options.contextPicker,
-                options.contextPicker,
-            );
+            contextPicker = Object.assign({}, this.options.contextPicker, options.contextPicker);
         }
 
         this.options = Object.assign({}, this.options, options, {

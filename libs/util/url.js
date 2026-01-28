@@ -1,9 +1,3 @@
-/**
- * Copyright 2015, Yahoo! Inc.
- * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
- */
-'use strict';
-
 var forEach = require('./forEach');
 var pickContext = require('./pickContext');
 
@@ -41,9 +35,7 @@ function buildGETUrl(baseUrl, resource, params, config, context) {
                 idVal = encodeURIComponent(v);
             } else if (v !== undefined) {
                 try {
-                    matrix.push(
-                        k + '=' + encodeURIComponent(jsonifyComplexType(v)),
-                    );
+                    matrix.push(k + '=' + encodeURIComponent(jsonifyComplexType(v)));
                 } catch (err) {
                     console.debug('jsonifyComplexType failed: ' + err);
                 }
@@ -88,16 +80,9 @@ function buildPOSTUrl(baseUrl, request) {
         finalUrl += '/' + request.resource;
     }
 
-    forEach(
-        pickContext(
-            request.options.context,
-            request.options.contextPicker,
-            'POST',
-        ),
-        function eachContext(v, k) {
-            query.push(k + '=' + encodeURIComponent(v));
-        },
-    );
+    forEach(pickContext(request.options.context, request.options.contextPicker, 'POST'), function eachContext(v, k) {
+        query.push(k + '=' + encodeURIComponent(v));
+    });
     if (query.length > 0) {
         finalUrl += '?' + query.sort().join('&');
     }

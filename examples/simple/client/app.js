@@ -12,7 +12,7 @@ var readFlickr = require('../shared/getFlickrPhotos'),
     });
 
 //client specific callback
-readFlickrClient = function (err, data) {
+readFlickrClient = (err, data) => {
     if (err) {
         throw err;
     }

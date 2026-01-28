@@ -29,7 +29,7 @@ function _checkResourceHandlers(service) {
 
         if (handler.length > 1) {
             console.warn(
-                `${service.resource} ${operation} handler is callback based. Callback based resource handlers are deprecated and will be removed in the next version.`,
+                `${service.resource} ${operation} handler is callback based. Callback based resource handlers are deprecated and will be removed in the next version.`
             );
         }
     }
@@ -73,9 +73,7 @@ function parseRequest(req) {
 }
 
 function sanitizeResourceName(resource) {
-    return resource
-        ? resource.replace(RESOURCE_SANTIZER_REGEXP, '*')
-        : resource;
+    return resource ? resource.replace(RESOURCE_SANTIZER_REGEXP, '*') : resource;
 }
 
 function emptyResourceError() {
@@ -98,12 +96,9 @@ function badResourceError(resource) {
 
 function badOperationError(resource, operation) {
     const resourceName = sanitizeResourceName(resource);
-    const error = fumble.http.badRequest(
-        `Unsupported "${resourceName}.${operation}" operation`,
-        {
-            debug: 'Only "create", "read", "update" or "delete" operations are allowed',
-        },
-    );
+    const error = fumble.http.badRequest(`Unsupported "${resourceName}.${operation}" operation`, {
+        debug: 'Only "create", "read", "update" or "delete" operations are allowed',
+    });
     error.source = 'fetchr';
     return error;
 }
@@ -180,11 +175,7 @@ class Request {
     params(params) {
         this._params =
             typeof this._paramsProcessor === 'function'
-                ? this._paramsProcessor(
-                      this.req,
-                      { operation: this.operation, resource: this.resource },
-                      params,
-                  )
+                ? this._paramsProcessor(this.req, { operation: this.operation, resource: this.resource }, params)
                 : params;
         return this;
     }
@@ -226,9 +217,7 @@ class Request {
                 resource: this.resource,
                 operation: this.operation,
                 params: this._params,
-                statusCode: err
-                    ? err.statusCode
-                    : (meta && meta.statusCode) || 200,
+                statusCode: err ? err.statusCode : (meta && meta.statusCode) || 200,
                 err,
                 time: Date.now() - this._startTime,
             });
@@ -241,9 +230,7 @@ class Request {
      */
     async _executeRequest() {
         if (!Fetcher.isRegistered(this.resource)) {
-            const err = new FetchrError(
-                `Service "${sanitizeResourceName(this.resource)}" could not be found`,
-            );
+            const err = new FetchrError(`Service "${sanitizeResourceName(this.resource)}" could not be found`);
             return { err };
         }
 
@@ -252,7 +239,7 @@ class Request {
 
         if (!handler) {
             const err = new FetchrError(
-                `Operation "${this.operation}" is not allowed for resource "${sanitizeResourceName(this.resource)}"`,
+                `Operation "${this.operation}" is not allowed for resource "${sanitizeResourceName(this.resource)}"`
             );
             err.statusCode = 405;
 
@@ -304,7 +291,7 @@ class Request {
     end(callback) {
         if (!arguments.length) {
             console.warn(
-                'You called .end() without a callback. This will become an error in the future. Use .then() instead.',
+                'You called .end() without a callback. This will become an error in the future. Use .then() instead.'
             );
         }
 
@@ -396,7 +383,7 @@ class Fetcher {
     static registerService(service) {
         if (!service) {
             throw new FetchrError(
-                'Fetcher.registerService requires a service definition (ex. registerService(service)).',
+                'Fetcher.registerService requires a service definition (ex. registerService(service)).'
             );
         }
 
@@ -407,9 +394,7 @@ class Fetcher {
             resource = service.name;
             Fetcher._deprecatedServicesDefinitions.push(resource);
         } else {
-            throw new FetchrError(
-                '"resource" property is missing in service definition.',
-            );
+            throw new FetchrError('"resource" property is missing in service definition.');
         }
         _checkResourceHandlers(service);
 
@@ -440,9 +425,7 @@ class Fetcher {
         //Access service by name
         const service = Fetcher.isRegistered(name);
         if (!service) {
-            throw new FetchrError(
-                `Service "${sanitizeResourceName(name)}" could not be found`,
-            );
+            throw new FetchrError(`Service "${sanitizeResourceName(name)}" could not be found`);
         }
         return service;
     }
@@ -475,13 +458,8 @@ class Fetcher {
      * @returns {Function} middleware
      */
     static middleware(options = {}) {
-        if (
-            Fetcher._deprecatedServicesDefinitions.length &&
-            'production' !== process.env.NODE_ENV
-        ) {
-            const services = Fetcher._deprecatedServicesDefinitions
-                .sort()
-                .join(', ');
+        if (Fetcher._deprecatedServicesDefinitions.length && 'production' !== process.env.NODE_ENV) {
+            const services = Fetcher._deprecatedServicesDefinitions.sort().join(', ');
 
             console.warn(`You have registered services using a deprecated property.
 Please, rename the property "name" to "resource" in the
@@ -524,13 +502,9 @@ following services definitions: ${services}.`);
                     }
                     if (err) {
                         const { statusCode, output } = getErrorResponse(err);
-                        res.status(statusCode).json(
-                            formatResponse(req, res, { output, meta }),
-                        );
+                        res.status(statusCode).json(formatResponse(req, res, { output, meta }));
                     } else {
-                        res.status(meta.statusCode || 200).json(
-                            formatResponse(req, res, { data, meta }),
-                        );
+                        res.status(meta.statusCode || 200).json(formatResponse(req, res, { data, meta }));
                     }
                 });
         };
@@ -601,11 +575,7 @@ following services definitions: ${services}.`);
             callback = config;
             config = {};
         }
-        return request
-            .params(params)
-            .body(body)
-            .clientConfig(config)
-            .end(callback);
+        return request.params(params).body(body).clientConfig(config).end(callback);
     }
 
     /**
@@ -640,11 +610,7 @@ following services definitions: ${services}.`);
             callback = config;
             config = {};
         }
-        return request
-            .params(params)
-            .body(body)
-            .clientConfig(config)
-            .end(callback);
+        return request.params(params).body(body).clientConfig(config).end(callback);
     }
 
     /**

@@ -1,0 +1,66 @@
+{
+    "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+    "vcs": {
+        "enabled": true,
+        "clientKind": "git",
+        "useIgnoreFile": true
+    },
+    "files": {
+        "ignoreUnknown": false,
+        "ignore": ["node_modules", "coverage", ".nyc_output", "artifacts", "tests/functional/static", "examples/**"]
+    },
+    "formatter": {
+        "enabled": true,
+        "formatWithErrors": false,
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineEnding": "lf",
+        "lineWidth": 120
+    },
+    "organizeImports": {
+        "enabled": true
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "suspicious": {
+                "noPrototypeBuiltins": "off",
+                "noDoubleEquals": "off",
+                "noThenProperty": "off",
+                "noDuplicateTestHooks": "off"
+            },
+            "style": {
+                "noVar": "off",
+                "noUnusedTemplateLiteral": "off",
+                "useSingleVarDeclarator": "off",
+                "useTemplate": "off",
+                "useNodejsImportProtocol": "off",
+                "noArguments": "off",
+                "noUselessElse": "off",
+                "useExponentiationOperator": "off",
+                "noParameterAssign": "off"
+            },
+            "complexity": {
+                "useOptionalChain": "off",
+                "noForEach": "off",
+                "useLiteralKeys": "off"
+            },
+            "correctness": {
+                "noInnerDeclarations": "off"
+            }
+        }
+    },
+    "javascript": {
+        "formatter": {
+            "quoteStyle": "single",
+            "jsxQuoteStyle": "double",
+            "trailingCommas": "es5",
+            "semicolons": "always",
+            "arrowParentheses": "always",
+            "bracketSpacing": true,
+            "quoteProperties": "asNeeded"
+        },
+        "globals": ["Promise"]
+    }
+}

@@ -10,45 +10,28 @@ function requestToOptions(request) {
         {
             xhrTimeout: request.options.xhrTimeout,
         },
-        request._clientConfig,
+        request._clientConfig
     );
     options.config = config;
     options.headers = config.headers || request.options.headers || {};
 
     var baseUrl = config.uri;
     if (!baseUrl) {
-        baseUrl = config.cors
-            ? request.options.corsPath
-            : request.options.xhrPath;
+        baseUrl = config.cors ? request.options.corsPath : request.options.xhrPath;
     }
 
     if (request.operation === 'read' && !config.post_for_read) {
         options.method = 'GET';
 
-        var buildGetUrl =
-            typeof config.constructGetUri === 'function'
-                ? config.constructGetUri
-                : url.buildGETUrl;
+        var buildGetUrl = typeof config.constructGetUri === 'function' ? config.constructGetUri : url.buildGETUrl;
 
-        var context = pickContext(
-            request.options.context,
-            request.options.contextPicker,
-            'GET',
-        );
+        var context = pickContext(request.options.context, request.options.contextPicker, 'GET');
 
-        var args = [
-            baseUrl,
-            request.resource,
-            request._params,
-            request._clientConfig,
-            context,
-        ];
+        var args = [baseUrl, request.resource, request._params, request._clientConfig, context];
 
         // If a custom getUriFn returns falsy value, we should run urlUtil.buildGETUrl
         // TODO: Add test for this fallback
-        options.url =
-            buildGetUrl.apply(request, args) ||
-            url.buildGETUrl.apply(request, args);
+        options.url = buildGetUrl.apply(request, args) || url.buildGETUrl.apply(request, args);
 
         if (options.url.length <= MAX_URI_LEN) {
             return options;
@@ -87,13 +70,11 @@ function normalizeRetry(request) {
         {
             interval: 200,
             maxRetries: 0,
-            retryOnPost:
-                request.operation === 'read' ||
-                request.options.unsafeAllowRetry,
+            retryOnPost: request.operation === 'read' || request.options.unsafeAllowRetry,
             statusCodes: [0, 408, 999],
         },
         request.options.retry,
-        request._clientConfig.retry,
+        request._clientConfig.retry
     );
 
     if ('unsafeAllowRetry' in request._clientConfig) {
@@ -101,9 +82,7 @@ function normalizeRetry(request) {
     }
 
     if (retry.max_retries) {
-        console.warn(
-            '"max_retries" is deprecated and will be removed in a future release, use "maxRetries" instead.',
-        );
+        console.warn('"max_retries" is deprecated and will be removed in a future release, use "maxRetries" instead.');
         retry.maxRetries = retry.max_retries;
     }
 

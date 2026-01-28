@@ -1,21 +1,13 @@
-// As seen in isomorphic-fetch fetch polyfill:
-// https://github.com/matthew-andrews/isomorphic-fetch/blob/fc5e0d0d0b180e5b4c70b2ae7f738c50a9a51b25/fetch-npm-node.js
-
-'use strict';
+// Node.js 20+ provides native fetch, Request, Response, Headers, and AbortController
+// However, for testing we use node-fetch because fetch-mock@10.x is designed to work
+// with node-fetch, not with Node.js native fetch. fetch-mock expects node-fetch's
+// behavior for relative URLs.
 
 const nodeFetch = require('node-fetch');
-const {
-    AbortController,
-    abortableFetch,
-} = require('abortcontroller-polyfill/dist/cjs-ponyfill');
-
-const { fetch, Request } = abortableFetch({
-    fetch: nodeFetch,
-    Request: nodeFetch.Request,
-});
-
-global.AbortController = AbortController;
+global.fetch = nodeFetch;
 global.Headers = nodeFetch.Headers;
-global.Request = Request;
+global.Request = nodeFetch.Request;
 global.Response = nodeFetch.Response;
-global.fetch = fetch;
+
+// AbortController is available natively in Node.js 15+
+// No setup needed

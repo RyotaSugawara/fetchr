@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
 `);
 });
 
-app.use(function (req, res) {
+app.use((req, res) => {
     res.status(404).send({ error: 'page not found' });
 });
 

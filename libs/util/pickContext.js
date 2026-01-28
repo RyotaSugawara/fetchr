@@ -19,19 +19,17 @@ function pickContext(context, picker, method) {
     if (typeof p === 'string') {
         result[p] = context[p];
     } else if (Array.isArray(p)) {
-        p.forEach(function (key) {
+        p.forEach((key) => {
             result[key] = context[key];
         });
     } else if (typeof p === 'function') {
-        forEach(context, function (value, key) {
+        forEach(context, (value, key) => {
             if (p(value, key, context)) {
                 result[key] = context[key];
             }
         });
     } else {
-        throw new TypeError(
-            'picker must be an string, an array, or a function.',
-        );
+        throw new TypeError('picker must be an string, an array, or a function.');
     }
 
     return result;
