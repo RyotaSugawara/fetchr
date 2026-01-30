@@ -22,11 +22,11 @@ app.use(bodyParser.json());
 
 app.use(config.xhrPath, Fetcher.middleware());
 
-app.use('/server', function (req, res) {
+app.use('/server', (req, res) => {
     var fetcher = new Fetcher({ req: req });
 
     //client specific callback
-    readFlickrServer = function (err, data) {
+    readFlickrServer = (err, data) => {
         if (err) {
             throw err;
         }
@@ -53,7 +53,7 @@ app.use('/server', function (req, res) {
 app.use(express['static'](path.join(__dirname, '..', 'client', 'build')));
 
 //For the index.html file
-app.use('/client', function (req, res) {
+app.use('/client', (req, res) => {
     var tpl = fs.readFileSync(templatePath, { encoding: 'utf8' });
     res.send(tpl);
 });

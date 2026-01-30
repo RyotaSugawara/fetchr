@@ -1,10 +1,3 @@
-/**
- * Copyright 2014, Yahoo! Inc.
- * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
- */
-
-'use strict';
-
 const fetchMock = require('fetch-mock');
 var expect = require('chai').expect;
 var mockery = require('mockery');
@@ -42,7 +35,7 @@ function handleFakeRequest(a, b, request) {
         [method](url)
         .set(request.headers.entries())
         .send(request.body ? JSON.parse(request.body.toString()) : undefined)
-        .then(function (res) {
+        .then((res) => {
             if (res.error) {
                 // fetcher error
                 return {
@@ -83,46 +76,38 @@ function statsCollector(s) {
     stats = s;
 }
 
-var callbackWithStats = function (operation, done) {
-    return function (err, data, meta) {
-        expect(stats.resource).to.eql(resource);
-        expect(stats.operation).to.eql(operation);
-        expect(stats.time).to.be.at.least(0);
-        expect(stats.err).to.eql(err);
-        expect(stats.statusCode).to.eql((err && err.statusCode) || 200);
-        expect(stats.params).to.eql(params);
-        callback(operation, done)(err, data, meta);
-    };
+var callbackWithStats = (operation, done) => (err, data, meta) => {
+    expect(stats.resource).to.eql(resource);
+    expect(stats.operation).to.eql(operation);
+    expect(stats.time).to.be.at.least(0);
+    expect(stats.err).to.eql(err);
+    expect(stats.statusCode).to.eql((err && err.statusCode) || 200);
+    expect(stats.params).to.eql(params);
+    callback(operation, done)(err, data, meta);
 };
 
-describe('Client Fetcher', function () {
+describe('Client Fetcher', () => {
     after(() => {
         fetchMock.reset();
     });
 
-    describe('DEFAULT', function () {
+    describe('DEFAULT', () => {
         before(function () {
             this.fetcher = new Fetcher({
                 context: context,
                 statsCollector: statsCollector,
             });
-            validateRequest = function (req) {
+            validateRequest = (req) => {
                 if (req.method === 'GET') {
                     expect(req.url).to.contain(DEFAULT_PATH + '/' + resource);
                     expect(req.url).to.contain('?_csrf=' + context._csrf);
                 } else if (req.method === 'POST') {
-                    expect(req.url).to.equal(
-                        DEFAULT_PATH +
-                            '/' +
-                            resource +
-                            '?_csrf=' +
-                            context._csrf,
-                    );
+                    expect(req.url).to.equal(DEFAULT_PATH + '/' + resource + '?_csrf=' + context._csrf);
                 }
             };
         });
 
-        beforeEach(function () {
+        beforeEach(() => {
             stats = null;
         });
 
@@ -135,21 +120,19 @@ describe('Client Fetcher', function () {
             resolve,
         });
 
-        after(function () {
+        after(() => {
             validateRequest = null;
         });
     });
 
-    describe('CORS', function () {
+    describe('CORS', () => {
         before(function () {
-            validateRequest = function (req) {
+            validateRequest = (req) => {
                 if (req.method === 'GET') {
                     expect(req.url).to.contain(corsPath);
                     expect(req.url).to.contain('_csrf=' + context._csrf);
                 } else if (req.method === 'POST') {
-                    expect(req.url).to.contain(
-                        '/' + resource + '?_csrf=' + context._csrf,
-                    );
+                    expect(req.url).to.contain('/' + resource + '?_csrf=' + context._csrf);
                 }
             };
             this.fetcher = new Fetcher({
@@ -168,12 +151,12 @@ describe('Client Fetcher', function () {
             disableNoConfigTests: true,
         });
 
-        after(function () {
+        after(() => {
             validateRequest = null;
         });
     });
 
-    describe('request', function () {
+    describe('request', () => {
         before(function () {
             this.fetcher = new Fetcher({
                 context: context,
@@ -187,14 +170,14 @@ describe('Client Fetcher', function () {
                 .body(body)
                 .clientConfig(config)
                 .end(
-                    callback(operation, function (err) {
+                    callback(operation, (err) => {
                         if (err) {
                             done(err);
                             return;
                         }
                         expect(request.abort).to.exist;
                         done();
-                    }),
+                    })
                 );
         });
         it('should be able to abort when calling end w/ callback', function () {
@@ -204,23 +187,23 @@ describe('Client Fetcher', function () {
                 .body(body)
                 .clientConfig(config)
                 .end(
-                    callback(operation, function (err) {
+                    callback(operation, (err) => {
                         if (err) {
                             // in this case, an error is good
                             // we want the error to be thrown then request is aborted
                             // done();
                         }
-                    }),
+                    })
                 );
             expect(request.abort).to.exist;
             request.abort();
         });
     });
 
-    describe('Timeout', function () {
-        describe('should be configurable globally', function () {
+    describe('Timeout', () => {
+        describe('should be configurable globally', () => {
             before(function () {
-                mockery.registerMock('./util/httpRequest', function (options) {
+                mockery.registerMock('./util/httpRequest', (options) => {
                     expect(options.timeout).to.equal(4000);
                     return httpRequest(options);
                 });
@@ -244,15 +227,15 @@ describe('Client Fetcher', function () {
                 reject,
             });
 
-            after(function () {
+            after(() => {
                 mockery.deregisterMock('./util/httpRequest');
                 mockery.disable();
             });
         });
 
-        describe('should be configurable per each fetchr call', function () {
+        describe('should be configurable per each fetchr call', () => {
             before(function () {
-                mockery.registerMock('./util/httpRequest', function (options) {
+                mockery.registerMock('./util/httpRequest', (options) => {
                     expect(options.timeout).to.equal(5000);
                     return httpRequest(options);
                 });
@@ -277,15 +260,15 @@ describe('Client Fetcher', function () {
                 disableNoConfigTests: true,
             });
 
-            after(function () {
+            after(() => {
                 mockery.deregisterMock('./util/httpRequest');
                 mockery.disable();
             });
         });
 
-        describe('should default to DEFAULT_TIMEOUT of 3000', function () {
+        describe('should default to DEFAULT_TIMEOUT of 3000', () => {
             before(function () {
-                mockery.registerMock('./util/httpRequest', function (options) {
+                mockery.registerMock('./util/httpRequest', (options) => {
                     expect(options.timeout).to.equal(3000);
                     return httpRequest(options);
                 });
@@ -308,39 +291,33 @@ describe('Client Fetcher', function () {
                 reject,
             });
 
-            after(function () {
+            after(() => {
                 mockery.deregisterMock('./util/httpRequest');
                 mockery.disable();
             });
         });
     });
 
-    describe('Context Picker', function () {
+    describe('Context Picker', () => {
         var ctx = Object.assign({ random: 'randomnumber' }, context);
-        before(function () {
-            validateRequest = function (req) {
+        before(() => {
+            validateRequest = (req) => {
                 if (req.method === 'GET') {
                     expect(req.url).to.contain(DEFAULT_PATH + '/' + resource);
                     expect(req.url).to.contain('?_csrf=' + ctx._csrf);
                     expect(req.url).to.not.contain('random=' + ctx.random);
                 } else if (req.method === 'POST') {
                     expect(req.url).to.equal(
-                        DEFAULT_PATH +
-                            '/' +
-                            resource +
-                            '?_csrf=' +
-                            ctx._csrf +
-                            '&random=' +
-                            ctx.random,
+                        DEFAULT_PATH + '/' + resource + '?_csrf=' + ctx._csrf + '&random=' + ctx.random
                     );
                 }
             };
         });
-        after(function () {
+        after(() => {
             validateRequest = null;
         });
 
-        describe('Function', function () {
+        describe('Function', () => {
             before(function () {
                 this.fetcher = new Fetcher({
                     context: ctx,
@@ -365,7 +342,7 @@ describe('Client Fetcher', function () {
             });
         });
 
-        describe('Property Name', function () {
+        describe('Property Name', () => {
             before(function () {
                 this.fetcher = new Fetcher({
                     context: ctx,
@@ -385,7 +362,7 @@ describe('Client Fetcher', function () {
             });
         });
 
-        describe('Property Names', function () {
+        describe('Property Names', () => {
             before(function () {
                 this.fetcher = new Fetcher({
                     context: ctx,
@@ -411,27 +388,25 @@ describe('Client Fetcher', function () {
             const fetcher = new Fetcher({});
             const constructGetUri = sinon.stub().callsFake(urlUtil.buildGETUrl);
 
-            return fetcher
-                .read('mock_service', { foo: 'bar' }, { constructGetUri })
-                .then(() => {
-                    sinon.assert.calledOnceWithExactly(
-                        constructGetUri,
-                        '/api',
-                        'mock_service',
-                        { foo: 'bar' },
-                        { constructGetUri },
-                        {},
-                    );
-                });
+            return fetcher.read('mock_service', { foo: 'bar' }, { constructGetUri }).then(() => {
+                sinon.assert.calledOnceWithExactly(
+                    constructGetUri,
+                    '/api',
+                    'mock_service',
+                    { foo: 'bar' },
+                    { constructGetUri },
+                    {}
+                );
+            });
         });
     });
 
-    describe('Custom request headers', function () {
+    describe('Custom request headers', () => {
         var VERSION = '1.0.0';
 
-        describe('should be configurable globally', function () {
+        describe('should be configurable globally', () => {
             before(function () {
-                mockery.registerMock('./util/httpRequest', function (options) {
+                mockery.registerMock('./util/httpRequest', (options) => {
                     expect(options.headers['X-APP-VERSION']).to.equal(VERSION);
                     return httpRequest(options);
                 });
@@ -457,15 +432,15 @@ describe('Client Fetcher', function () {
                 reject,
             });
 
-            after(function () {
+            after(() => {
                 mockery.deregisterMock('./util/httpRequest');
                 mockery.disable();
             });
         });
 
-        describe('should be configurable per request', function () {
+        describe('should be configurable per request', () => {
             before(function () {
-                mockery.registerMock('./util/httpRequest', function (options) {
+                mockery.registerMock('./util/httpRequest', (options) => {
                     expect(options.headers['X-APP-VERSION']).to.equal(VERSION);
                     return httpRequest(options);
                 });
@@ -489,15 +464,15 @@ describe('Client Fetcher', function () {
                 disableNoConfigTests: true,
             });
 
-            after(function () {
+            after(() => {
                 mockery.deregisterMock('./util/httpRequest');
                 mockery.disable();
             });
         });
     });
 
-    describe('updateOptions', function () {
-        it('replaces all non mergeable options', function () {
+    describe('updateOptions', () => {
+        it('replaces all non mergeable options', () => {
             const f1 = () => {};
             const f2 = () => {};
 
@@ -521,7 +496,7 @@ describe('Client Fetcher', function () {
             expect(fetcher.options.xhrTimeout).to.equal(1500);
         });
 
-        it('merges context values', function () {
+        it('merges context values', () => {
             const fetcher = new Fetcher({
                 context: { a: 'a' },
             });
@@ -707,10 +682,10 @@ describe('Client Fetcher', function () {
         });
     });
 
-    describe('Custom retry', function () {
-        describe('should be configurable globally', function () {
+    describe('Custom retry', () => {
+        describe('should be configurable globally', () => {
             before(function () {
-                mockery.registerMock('./util/httpRequest', function (options) {
+                mockery.registerMock('./util/httpRequest', (options) => {
                     expect(options.retry).to.deep.equal({
                         interval: 350,
                         maxRetries: 2,
@@ -745,15 +720,15 @@ describe('Client Fetcher', function () {
                 reject,
             });
 
-            after(function () {
+            after(() => {
                 mockery.deregisterMock('./util/httpRequest');
                 mockery.disable();
             });
         });
 
-        describe('should be configurable per request', function () {
+        describe('should be configurable per request', () => {
             before(function () {
-                mockery.registerMock('./util/httpRequest', function (options) {
+                mockery.registerMock('./util/httpRequest', (options) => {
                     expect(options.retry).to.deep.equal({
                         interval: 350,
                         maxRetries: 2,
@@ -787,7 +762,7 @@ describe('Client Fetcher', function () {
                 disableNoConfigTests: true,
             });
 
-            after(function () {
+            after(() => {
                 mockery.deregisterMock('./util/httpRequest');
                 mockery.disable();
             });

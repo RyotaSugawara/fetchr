@@ -9,12 +9,7 @@ var MockErrorService = {
         const meta = this.meta || params.meta;
         this.meta = null;
 
-        if (
-            req.query &&
-            req.query.cors &&
-            params &&
-            Object.keys(params).length === 0
-        ) {
+        if (req.query && req.query.cors && params && Object.keys(params).length === 0) {
             // in our CORS test, we use regular query params instead
             // of matrix params for the params object will be empty
             // create params from req.query but omit the context
@@ -29,7 +24,7 @@ var MockErrorService = {
         }
         return {
             err: {
-                statusCode: parseInt(params.statusCode),
+                statusCode: Number.parseInt(params.statusCode),
                 output: params.output,
                 message: params.message,
                 read: 'error',
@@ -45,7 +40,7 @@ var MockErrorService = {
 
         return {
             err: {
-                statusCode: parseInt(params.statusCode),
+                statusCode: Number.parseInt(params.statusCode),
                 message: params.message,
                 output: params.output,
                 create: 'error',
@@ -55,29 +50,25 @@ var MockErrorService = {
         };
     },
 
-    update: async function ({ params }) {
-        return {
-            err: {
-                statusCode: parseInt(params.statusCode),
-                message: params.message,
-                output: params.output,
-                update: 'error',
-            },
-            data: null,
-        };
-    },
+    update: async ({ params }) => ({
+        err: {
+            statusCode: Number.parseInt(params.statusCode),
+            message: params.message,
+            output: params.output,
+            update: 'error',
+        },
+        data: null,
+    }),
 
-    delete: async function ({ params }) {
-        return {
-            err: {
-                statusCode: parseInt(params.statusCode),
-                message: params.message,
-                output: params.output,
-                delete: 'error',
-            },
-            data: null,
-        };
-    },
+    delete: async ({ params }) => ({
+        err: {
+            statusCode: Number.parseInt(params.statusCode),
+            message: params.message,
+            output: params.output,
+            delete: 'error',
+        },
+        data: null,
+    }),
 };
 
 module.exports = MockErrorService;

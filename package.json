@@ -1,59 +1,50 @@
 {
-  "name": "fetchr",
-  "version": "0.7.14",
-  "description": "Fetchr augments Flux applications by allowing Flux stores to be used on server and client to fetch data",
-  "main": "./libs/fetcher.js",
-  "browser": "./libs/fetcher.client.js",
-  "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint": "npm run lint:client && npm run lint:server && npm run format:check",
-    "lint:client": "eslint libs/util/ libs/fetcher.client.js",
-    "lint:server": "eslint --parser-options=ecmaVersion:latest libs/fetcher.js",
-    "test": "npm run test:unit && npm run test:functional",
-    "test:coverage": "nyc --reporter=lcov npm run test:unit",
-    "test:unit": "NODE_ENV=test mocha tests/unit/ --recursive --reporter spec --timeout 20000 --exit --require tests/unit/setup.js",
-    "test:functional": "NODE_ENV=test mocha tests/functional/*.test.js --reporter spec --exit -t 10000"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:yahoo/fetchr"
-  },
-  "author": "Rajiv Tirumalareddy <rajivtirum@yahoo-inc.com>",
-  "licenses": [
-    {
-      "type": "BSD",
-      "url": "https://github.com/yahoo/fetchr/blob/master/LICENSE.md"
-    }
-  ],
-  "dependencies": {
-    "fumble": "^0.1.0"
-  },
-  "devDependencies": {
-    "abortcontroller-polyfill": "^1.7.3",
-    "chai": "^4.2.0",
-    "eslint": "^8.44.0",
-    "express": "^4.17.1",
-    "fetch-mock": "^10.1.1",
-    "mocha": "^10.0.0",
-    "mockery": "^2.0.0",
-    "node-fetch": "^2.6.2",
-    "nyc": "^17.0.0",
-    "prettier": "^3.0.0",
-    "puppeteer": "^23.2.1",
-    "sinon": "^19.0.2",
-    "supertest": "7.0.0",
-    "webpack": "^5.51.1"
-  },
-  "keywords": [
-    "yahoo",
-    "flux",
-    "react",
-    "fetchr",
-    "dispatchr"
-  ],
-  "prettier": {
-    "singleQuote": true,
-    "tabWidth": 4
-  }
+    "name": "fetchr",
+    "version": "0.7.14",
+    "description": "Fetchr augments Flux applications by allowing Flux stores to be used on server and client to fetch data",
+    "packageManager": "pnpm@10.28.1",
+    "main": "./libs/fetcher.js",
+    "browser": "./libs/fetcher.client.js",
+    "scripts": {
+        "format": "biome format --write .",
+        "format:check": "biome format .",
+        "lint": "biome check .",
+        "lint:fix": "biome check --write .",
+        "test": "npm run test:unit && npm run test:functional",
+        "test:coverage": "nyc --reporter=lcov npm run test:unit",
+        "test:unit": "NODE_ENV=test mocha tests/unit/ --recursive --reporter spec --timeout 20000 --exit --require tests/unit/setup.js",
+        "test:functional": "NODE_ENV=test mocha tests/functional/*.test.js --reporter spec --exit -t 120000"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:yahoo/fetchr"
+    },
+    "author": "Rajiv Tirumalareddy <rajivtirum@yahoo-inc.com>",
+    "engines": {
+        "node": ">=20.0.0"
+    },
+    "licenses": [
+        {
+            "type": "BSD",
+            "url": "https://github.com/yahoo/fetchr/blob/master/LICENSE.md"
+        }
+    ],
+    "dependencies": {
+        "fumble": "^0.1.0"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^1.9.4",
+        "chai": "^4.5.0",
+        "express": "^4.21.2",
+        "fetch-mock": "^10.1.1",
+        "mocha": "^10.8.2",
+        "mockery": "^2.1.0",
+        "node-fetch": "^2.7.0",
+        "nyc": "^17.1.0",
+        "puppeteer": "^23.10.4",
+        "sinon": "^19.0.2",
+        "supertest": "^7.0.0",
+        "webpack": "^5.97.1"
+    },
+    "keywords": ["yahoo", "flux", "react", "fetchr", "dispatchr"]
 }

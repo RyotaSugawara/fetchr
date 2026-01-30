@@ -38,101 +38,80 @@ function _shouldRetry(err) {
 //
 // send -> _fetch -> _retry -> _fetch -> _retry -> end
 function _retry(err) {
-    var self = this;
-    if (!_shouldRetry.call(self, err)) {
+    if (!_shouldRetry.call(this, err)) {
         throw err;
     }
 
     // Use exponential backoff and full jitter
     // strategy published in
     // https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/
-    var delay =
-        Math.random() *
-        self._options.retry.interval *
-        Math.pow(2, self._currentAttempt);
+    var delay = Math.random() * this._options.retry.interval * Math.pow(2, this._currentAttempt);
 
-    self._controller = new AbortController();
-    self._currentAttempt += 1;
+    this._controller = new AbortController();
+    this._currentAttempt += 1;
 
-    return new Promise(function (resolve, reject) {
-        setTimeout(function () {
-            _fetch.call(self).then(resolve, reject);
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            _fetch.call(this).then(resolve, reject);
         }, delay);
     });
 }
 
 function _fetch() {
-    var self = this;
     var timedOut = false;
-    var request = new Request(self._options.url, {
-        body: self._options.body,
-        credentials: self._options.credentials,
-        headers: self._options.headers,
-        method: self._options.method,
-        signal: self._controller.signal,
+    var request = new Request(this._options.url, {
+        body: this._options.body,
+        credentials: this._options.credentials,
+        headers: this._options.headers,
+        method: this._options.method,
+        signal: this._controller.signal,
     });
 
-    var timeoutId = setTimeout(function () {
+    var timeoutId = setTimeout(() => {
         timedOut = true;
-        self._controller.abort();
-    }, self._options.timeout);
+        this._controller.abort();
+    }, this._options.timeout);
 
     return fetch(request)
         .then(
-            function (response) {
+            (response) => {
                 clearTimeout(timeoutId);
 
                 if (response.ok) {
-                    return response.json().catch(function () {
+                    return response.json().catch(() => {
                         throw new FetchrError(
                             FetchrError.BAD_JSON,
                             'Cannot parse response into a JSON object',
-                            self._options,
+                            this._options,
                             request,
-                            response,
+                            response
                         );
                     });
                 } else {
-                    return response.text().then(function (message) {
-                        throw new FetchrError(
-                            FetchrError.BAD_HTTP_STATUS,
-                            message,
-                            self._options,
-                            request,
-                            response,
-                        );
+                    return response.text().then((message) => {
+                        throw new FetchrError(FetchrError.BAD_HTTP_STATUS, message, this._options, request, response);
                     });
                 }
             },
-            function (err) {
+            (err) => {
                 clearTimeout(timeoutId);
                 if (err.name === 'AbortError') {
                     if (timedOut) {
                         throw new FetchrError(
                             FetchrError.TIMEOUT,
                             'Request failed due to timeout',
-                            self._options,
-                            request,
+                            this._options,
+                            request
                         );
                     }
 
-                    throw new FetchrError(
-                        FetchrError.ABORT,
-                        err.message,
-                        self._options,
-                        request,
-                    );
+                    throw new FetchrError(FetchrError.ABORT, err.message, this._options, request);
                 }
 
-                throw new FetchrError(
-                    FetchrError.UNKNOWN,
-                    err.message,
-                    self._options,
-                    request,
-                );
-            },
+                throw new FetchrError(FetchrError.UNKNOWN, err.message, this._options, request);
+            }
         )
-        .catch(_retry.bind(self));
+        .catch(_retry.bind(this));
 }
 
 function _send() {

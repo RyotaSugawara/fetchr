@@ -15,9 +15,9 @@ module.exports = function testCrud({
     disableNoConfigTests = false,
     isServer = false,
 }) {
-    describe('CRUD Interface', function () {
-        describe('should work superagent style', function () {
-            describe('with callbacks', function () {
+    describe('CRUD Interface', () => {
+        describe('should work superagent style', () => {
+            describe('with callbacks', () => {
                 it('should handle CREATE', function (done) {
                     const operation = 'create';
                     this.fetcher[operation](resource)
@@ -53,21 +53,19 @@ module.exports = function testCrud({
                 });
 
                 it('should throw if no resource is given', function () {
-                    expect(this.fetcher.read.bind(this.fetcher)).to.throw(
-                        'Resource is required for a fetcher request',
-                    );
+                    expect(this.fetcher.read.bind(this.fetcher)).to.throw('Resource is required for a fetcher request');
                 });
             });
 
-            describe('with Promises', function () {
+            describe('with Promises', () => {
                 function denySuccess(done) {
-                    return function () {
+                    return () => {
                         done(new Error('This operation should have failed'));
                     };
                 }
 
                 function allowFailure(done) {
-                    return function (err) {
+                    return (err) => {
                         expect(err.name).to.equal('FetchrError');
                         expect(err.message).to.exist;
                         done();
@@ -80,10 +78,7 @@ module.exports = function testCrud({
                         .params(params)
                         .body(body)
                         .clientConfig(config)
-                        .then(
-                            resolve(operation, done),
-                            reject(operation, done),
-                        );
+                        .then(resolve(operation, done), reject(operation, done));
                 });
 
                 it('should handle READ', function (done) {
@@ -91,10 +86,7 @@ module.exports = function testCrud({
                     this.fetcher[operation](resource)
                         .params(params)
                         .clientConfig(config)
-                        .then(
-                            resolve(operation, done),
-                            reject(operation, done),
-                        );
+                        .then(resolve(operation, done), reject(operation, done));
                 });
 
                 it('should handle UPDATE', function (done) {
@@ -103,10 +95,7 @@ module.exports = function testCrud({
                         .params(params)
                         .body(body)
                         .clientConfig(config)
-                        .then(
-                            resolve(operation, done),
-                            reject(operation, done),
-                        );
+                        .then(resolve(operation, done), reject(operation, done));
                 });
 
                 it('should handle DELETE', function (done) {
@@ -114,10 +103,7 @@ module.exports = function testCrud({
                     this.fetcher[operation](resource)
                         .params(params)
                         .clientConfig(config)
-                        .then(
-                            resolve(operation, done),
-                            reject(operation, done),
-                        );
+                        .then(resolve(operation, done), reject(operation, done));
                 });
 
                 it('should reject a CREATE promise on invalid resource', function (done) {
@@ -155,16 +141,14 @@ module.exports = function testCrud({
                 });
 
                 it('should throw if no resource is given', function () {
-                    expect(this.fetcher.read.bind(this.fetcher)).to.throw(
-                        'Resource is required for a fetcher request',
-                    );
+                    expect(this.fetcher.read.bind(this.fetcher)).to.throw('Resource is required for a fetcher request');
                 });
             });
         });
 
-        describe('should be backwards compatible', function () {
+        describe('should be backwards compatible', () => {
             function denySuccess(done) {
-                return function (err) {
+                return (err) => {
                     if (!err) {
                         done(new Error('This operation should have failed'));
                     } else {
@@ -178,86 +162,42 @@ module.exports = function testCrud({
             // with config
             it('should handle CREATE', function (done) {
                 const operation = 'create';
-                this.fetcher[operation](
-                    resource,
-                    params,
-                    body,
-                    config,
-                    callback(operation, done),
-                );
+                this.fetcher[operation](resource, params, body, config, callback(operation, done));
             });
 
             it('should handle READ', function (done) {
                 const operation = 'read';
-                this.fetcher[operation](
-                    resource,
-                    params,
-                    config,
-                    callback(operation, done),
-                );
+                this.fetcher[operation](resource, params, config, callback(operation, done));
             });
 
             it('should handle UPDATE', function (done) {
                 const operation = 'update';
-                this.fetcher[operation](
-                    resource,
-                    params,
-                    body,
-                    config,
-                    callback(operation, done),
-                );
+                this.fetcher[operation](resource, params, body, config, callback(operation, done));
             });
 
             it('should handle DELETE', function (done) {
                 const operation = 'delete';
-                this.fetcher[operation](
-                    resource,
-                    params,
-                    config,
-                    callback(operation, done),
-                );
+                this.fetcher[operation](resource, params, config, callback(operation, done));
             });
 
             it('should throw catchable error on CREATE with invalid resource', function (done) {
                 const operation = 'create';
-                this.fetcher[operation](
-                    invalidResource,
-                    params,
-                    body,
-                    config,
-                    denySuccess(done),
-                );
+                this.fetcher[operation](invalidResource, params, body, config, denySuccess(done));
             });
 
             it('should throw catchable error on READ with invalid resource', function (done) {
                 const operation = 'read';
-                this.fetcher[operation](
-                    invalidResource,
-                    params,
-                    config,
-                    denySuccess(done),
-                );
+                this.fetcher[operation](invalidResource, params, config, denySuccess(done));
             });
 
             it('should throw catchable error on UPDATE with invalid resource', function (done) {
                 const operation = 'update';
-                this.fetcher[operation](
-                    invalidResource,
-                    params,
-                    body,
-                    config,
-                    denySuccess(done),
-                );
+                this.fetcher[operation](invalidResource, params, body, config, denySuccess(done));
             });
 
             it('should throw catchable error on DELETE with invalid resource', function (done) {
                 const operation = 'delete';
-                this.fetcher[operation](
-                    invalidResource,
-                    params,
-                    config,
-                    denySuccess(done),
-                );
+                this.fetcher[operation](invalidResource, params, config, denySuccess(done));
             });
 
             if (!disableNoConfigTests) {
@@ -266,40 +206,22 @@ module.exports = function testCrud({
                 // it doesn't make sense to test a feature like CORS without being able to pass in a config
                 it('should handle CREATE w/ no config', function (done) {
                     const operation = 'create';
-                    this.fetcher[operation](
-                        resource,
-                        params,
-                        body,
-                        callback(operation, done),
-                    );
+                    this.fetcher[operation](resource, params, body, callback(operation, done));
                 });
 
                 it('should handle READ w/ no config', function (done) {
                     const operation = 'read';
-                    this.fetcher[operation](
-                        resource,
-                        params,
-                        callback(operation, done),
-                    );
+                    this.fetcher[operation](resource, params, callback(operation, done));
                 });
 
                 it('should handle UPDATE w/ no config', function (done) {
                     const operation = 'update';
-                    this.fetcher[operation](
-                        resource,
-                        params,
-                        body,
-                        callback(operation, done),
-                    );
+                    this.fetcher[operation](resource, params, body, callback(operation, done));
                 });
 
                 it('should handle DELETE w/ no config', function (done) {
                     const operation = 'delete';
-                    this.fetcher[operation](
-                        resource,
-                        params,
-                        callback(operation, done),
-                    );
+                    this.fetcher[operation](resource, params, callback(operation, done));
                 });
             }
         });
@@ -314,7 +236,7 @@ module.exports = function testCrud({
                     meta: { headers: { 'x-foo': 'foo' } },
                 })
                 .clientConfig(config)
-                .end(function (err, data, meta) {
+                .end((err, data, meta) => {
                     if (err) {
                         done(err);
                     }
@@ -328,7 +250,7 @@ module.exports = function testCrud({
                             meta: { headers: { 'x-bar': 'bar' } },
                         })
                         .clientConfig(config)
-                        .end(function (err, data, meta) {
+                        .end((err, data, meta) => {
                             if (err) {
                                 done(err);
                             }
@@ -337,24 +259,16 @@ module.exports = function testCrud({
                             expect(meta.headers['x-bar']).to.equal('bar');
                             const serviceMeta = fetcher.getServiceMeta();
                             expect(serviceMeta).to.have.length(2);
-                            expect(serviceMeta[0].headers).to.include.keys(
-                                'x-foo',
-                            );
-                            expect(serviceMeta[0].headers['x-foo']).to.equal(
-                                'foo',
-                            );
-                            expect(serviceMeta[1].headers).to.include.keys(
-                                'x-bar',
-                            );
-                            expect(serviceMeta[1].headers['x-bar']).to.equal(
-                                'bar',
-                            );
+                            expect(serviceMeta[0].headers).to.include.keys('x-foo');
+                            expect(serviceMeta[0].headers['x-foo']).to.equal('foo');
+                            expect(serviceMeta[1].headers).to.include.keys('x-bar');
+                            expect(serviceMeta[1].headers['x-bar']).to.equal('bar');
                             done();
                         });
                 });
         });
 
-        describe('should have serviceMeta data on error', function () {
+        describe('should have serviceMeta data on error', () => {
             it('with callbacks', function (done) {
                 const fetcher = this.fetcher;
                 fetcher._serviceMeta.length = 0; // reset serviceMeta to empty array
@@ -365,17 +279,13 @@ module.exports = function testCrud({
                         meta: { headers: { 'x-foo': 'foo' } },
                     })
                     .clientConfig(config)
-                    .end(function (err) {
+                    .end((err) => {
                         if (err) {
                             const serviceMeta = fetcher.getServiceMeta();
                             expect(serviceMeta).to.have.length(1);
                             expect(serviceMeta[0]).to.include.keys('headers');
-                            expect(serviceMeta[0].headers).to.include.keys(
-                                'x-foo',
-                            );
-                            expect(serviceMeta[0].headers['x-foo']).to.equal(
-                                'foo',
-                            );
+                            expect(serviceMeta[0].headers).to.include.keys('x-foo');
+                            expect(serviceMeta[0].headers['x-foo']).to.equal('foo');
                             done();
                         }
                     });
@@ -391,17 +301,13 @@ module.exports = function testCrud({
                         meta: { headers: { 'x-foo': 'foo' } },
                     })
                     .clientConfig(config)
-                    .catch(function (err) {
+                    .catch((err) => {
                         if (err) {
                             const serviceMeta = fetcher.getServiceMeta();
                             expect(serviceMeta).to.have.length(1);
                             expect(serviceMeta[0]).to.include.keys('headers');
-                            expect(serviceMeta[0].headers).to.include.keys(
-                                'x-foo',
-                            );
-                            expect(serviceMeta[0].headers['x-foo']).to.equal(
-                                'foo',
-                            );
+                            expect(serviceMeta[0].headers).to.include.keys('x-foo');
+                            expect(serviceMeta[0].headers['x-foo']).to.equal('foo');
                             done();
                         }
                     });
@@ -409,11 +315,9 @@ module.exports = function testCrud({
         });
     });
 
-    describe('should reject when resource does not implement operation', function () {
+    describe('should reject when resource does not implement operation', () => {
         function getErrorMessage(err) {
-            return isServer
-                ? err.message
-                : JSON.parse(err.message).output.message;
+            return isServer ? err.message : JSON.parse(err.message).output.message;
         }
 
         it('with callback', function (done) {
@@ -421,12 +325,10 @@ module.exports = function testCrud({
             fetcher
                 .read(mockNoopService.resource)
                 .clientConfig(config)
-                .end(function (err) {
+                .end((err) => {
                     const message = getErrorMessage(err);
                     expect(err.name).to.equal('FetchrError');
-                    expect(message).to.equal(
-                        'Operation "read" is not allowed for resource "mock_noop_service"',
-                    );
+                    expect(message).to.equal('Operation "read" is not allowed for resource "mock_noop_service"');
                     done();
                 });
         });
@@ -436,12 +338,10 @@ module.exports = function testCrud({
             fetcher
                 .read(mockNoopService.resource)
                 .clientConfig(config)
-                .catch(function (err) {
+                .catch((err) => {
                     const message = getErrorMessage(err);
                     expect(err.name).to.equal('FetchrError');
-                    expect(message).to.equal(
-                        'Operation "read" is not allowed for resource "mock_noop_service"',
-                    );
+                    expect(message).to.equal('Operation "read" is not allowed for resource "mock_noop_service"');
                     done();
                 });
         });

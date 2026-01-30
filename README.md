@@ -17,7 +17,14 @@ Having to write code differently for both environments is duplicative and error 
 ## Install
 
 ```bash
+# Using pnpm (recommended)
+pnpm add fetchr
+
+# Using npm
 npm install fetchr --save
+
+# Using yarn
+yarn add fetchr
 ```
 
 _Important:_ when on browser, `Fetchr` relies fully on [`Fetch`](https://fetch.spec.whatwg.org/) API. If you need to support old browsers, you will need to install a polyfill as well (eg. https://github.com/github/fetch).

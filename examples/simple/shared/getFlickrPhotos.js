@@ -9,7 +9,7 @@ module.exports = function flickrRead(fetcher, callback) {
             method: 'flickr.photos.getRecent',
             per_page: 5,
         })
-        .end(function (err, data) {
+        .end((err, data) => {
             if (err) {
                 callback &&
                     callback(new Error('failed to fetch data ' + err.message));
