@@ -1,5 +1,5 @@
 {
-    "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+    "$schema": "https://biomejs.dev/schemas/2.3.13/schema.json",
     "vcs": {
         "enabled": true,
         "clientKind": "git",
@@ -7,7 +7,15 @@
     },
     "files": {
         "ignoreUnknown": false,
-        "ignore": ["node_modules", "coverage", ".nyc_output", "artifacts", "tests/functional/static", "examples/**"]
+        "includes": [
+            "**",
+            "!**/node_modules",
+            "!**/coverage",
+            "!**/.nyc_output",
+            "!**/artifacts",
+            "!**/tests/functional/static",
+            "!**/examples"
+        ]
     },
     "formatter": {
         "enabled": true,
@@ -17,9 +25,7 @@
         "lineEnding": "lf",
         "lineWidth": 120
     },
-    "organizeImports": {
-        "enabled": true
-    },
+    "assist": { "actions": { "source": { "organizeImports": "on" } } },
     "linter": {
         "enabled": true,
         "rules": {
@@ -28,15 +34,14 @@
                 "noPrototypeBuiltins": "off",
                 "noDoubleEquals": "off",
                 "noThenProperty": "off",
-                "noDuplicateTestHooks": "off"
+                "noDuplicateTestHooks": "off",
+                "noVar": "off"
             },
             "style": {
-                "noVar": "off",
                 "noUnusedTemplateLiteral": "off",
                 "useSingleVarDeclarator": "off",
                 "useTemplate": "off",
                 "useNodejsImportProtocol": "off",
-                "noArguments": "off",
                 "noUselessElse": "off",
                 "useExponentiationOperator": "off",
                 "noParameterAssign": "off"
@@ -44,7 +49,8 @@
             "complexity": {
                 "useOptionalChain": "off",
                 "noForEach": "off",
-                "useLiteralKeys": "off"
+                "useLiteralKeys": "off",
+                "noArguments": "off"
             },
             "correctness": {
                 "noInnerDeclarations": "off"
