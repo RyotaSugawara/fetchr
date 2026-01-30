@@ -33,18 +33,24 @@
         "fumble": "^0.1.0"
     },
     "devDependencies": {
-        "@biomejs/biome": "^1.9.4",
-        "chai": "^4.5.0",
-        "express": "^4.21.2",
+        "@biomejs/biome": "^2.3.13",
+        "chai": "^6.2.2",
+        "express": "^5.2.1",
         "fetch-mock": "^10.1.1",
-        "mocha": "^10.8.2",
+        "mocha": "^11.7.5",
         "mockery": "^2.1.0",
         "node-fetch": "^2.7.0",
         "nyc": "^17.1.0",
-        "puppeteer": "^23.10.4",
-        "sinon": "^19.0.2",
+        "puppeteer": "^24.36.1",
+        "sinon": "^21.0.1",
         "supertest": "^7.0.0",
         "webpack": "^5.97.1"
     },
-    "keywords": ["yahoo", "flux", "react", "fetchr", "dispatchr"]
+    "keywords": [
+        "yahoo",
+        "flux",
+        "react",
+        "fetchr",
+        "dispatchr"
+    ]
 }
