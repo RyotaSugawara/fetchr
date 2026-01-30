@@ -29,9 +29,7 @@
             "url": "https://github.com/yahoo/fetchr/blob/master/LICENSE.md"
         }
     ],
-    "dependencies": {
-        "fumble": "^0.1.0"
-    },
+    "dependencies": {},
     "devDependencies": {
         "@biomejs/biome": "^2.3.13",
         "chai": "^6.2.2",

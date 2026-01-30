@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      fumble:
-        specifier: ^0.1.0
-        version: 0.1.9
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.3.13
@@ -833,9 +829,6 @@ packages:
 
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
-
-  fumble@0.1.9:
-    resolution: {integrity: sha512-0NNNOrYJsH9Rs8p5fbHMSkx0cITtVn49amIZGSgywKq+JOgh754ztLKdhVI08GFUO8lNHk3IJ41E2TalAFdI0w==}
 
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
@@ -2553,8 +2546,6 @@ snapshots:
   fromentries@1.3.2: {}
 
   fs.realpath@1.0.0: {}
-
-  fumble@0.1.9: {}
 
   function-bind@1.1.2: {}
 
