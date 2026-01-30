@@ -3,7 +3,6 @@
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 const qs = require('querystring');
-const fumble = require('fumble');
 
 const OP_READ = 'read';
 const OP_CREATE = 'create';
@@ -76,8 +75,34 @@ function sanitizeResourceName(resource) {
     return resource ? resource.replace(RESOURCE_SANTIZER_REGEXP, '*') : resource;
 }
 
+/**
+ * Creates a Bad Request error (400) with optional debug information
+ * Replaces fumble.http.badRequest() functionality
+ * @param {String} message Error message
+ * @param {Object} options Optional parameters
+ * @param {String} options.debug Debug information
+ * @return {Object} Error object with statusCode and message properties
+ */
+function createBadRequestError(message, options = {}) {
+    const error = {
+        statusCode: 400,
+        message: message,
+    };
+
+    if (options.debug) {
+        error.debug = options.debug;
+    }
+
+    // Capture stack trace for debugging
+    if (Error.captureStackTrace) {
+        Error.captureStackTrace(error, createBadRequestError);
+    }
+
+    return error;
+}
+
 function emptyResourceError() {
-    const error = fumble.http.badRequest('No resource specified', {
+    const error = createBadRequestError('No resource specified', {
         debug: 'No resource',
     });
     error.source = 'fetchr';
@@ -87,7 +112,7 @@ function emptyResourceError() {
 function badResourceError(resource) {
     const resourceName = sanitizeResourceName(resource);
     const errorMsg = `Resource "${resourceName}" is not registered`;
-    const error = fumble.http.badRequest(errorMsg, {
+    const error = createBadRequestError(errorMsg, {
         debug: `Bad resource ${resourceName}`,
     });
     error.source = 'fetchr';
@@ -96,7 +121,7 @@ function badResourceError(resource) {
 
 function badOperationError(resource, operation) {
     const resourceName = sanitizeResourceName(resource);
-    const error = fumble.http.badRequest(`Unsupported "${resourceName}.${operation}" operation`, {
+    const error = createBadRequestError(`Unsupported "${resourceName}.${operation}" operation`, {
         debug: 'Only "create", "read", "update" or "delete" operations are allowed',
     });
     error.source = 'fetchr';
